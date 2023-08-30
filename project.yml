@@ -18,5 +18,7 @@ packages:
             COPPER_API_KEY: "${COPPER_API_KEY}"
             COPPER_API_USER_EMAIL: "${COPPER_API_USER_EMAIL}"
             DO_SECRET: "${DO_SECRET}"
+            COPPER_TARGET_PIPELINE_ID: "${COPPER_TARGET_PIPELINE_ID}"
+            COPPER_TARGET_CUSTOM_FIELD_DEFINITION_ID: "${COPPER_TARGET_CUSTOM_FIELD_DEFINITION_ID}"
           annotations: {}
           limits: {}
