@@ -25,6 +25,21 @@ class Copper:
         self.target_pipeline_id = int(target_pipeline_id)
         self.target_custom_field_definition_id = int(target_custom_field_definition_id)
 
+    def get_target_custom_field_value(self, opportunity: dict) -> int:
+        result = list(filter(
+            lambda x: x['custom_field_definition_id'] == self.target_custom_field_definition_id,
+            opportunity['custom_fields']))
+
+        if len(result) == 0:
+            raise AttributeError('Custom field definition id \'{0}\' not found in opportunity'
+                                 .format(self.target_custom_field_definition_id))
+
+        result = result[0]['value']
+        return int(result if result is not None else 0)
+
+    def sort_by_proposal_number(self, opportunities: list) -> list:
+        return sorted(opportunities, key=self.get_target_custom_field_value, reverse=True)
+
     def fetch_opportunity(self, opportunity_id: int) -> dict:
         response = requests.request(
             'GET',
@@ -43,5 +58,17 @@ class Copper:
 
         return list(map(lambda stage: stage['id'], json.loads(response.text)))[1:]
 
+    def search_last_opportunity(self, stage_ids: list[int]) -> list[dict]:
+        response = requests.request(
+            'POST',
+            "{base_url}/opportunities/search".format(base_url=self.base_url),
+            headers=self.default_headers,
+            data=json.dumps({
+                'pipeline_ids': [self.target_pipeline_id],
+                'pipeline_stage_ids': stage_ids,
+                'sort_by': 'date_created',
+                'sort_direction': 'desc',
+            })
+        )
 
-
+        return json.loads(response.text)
