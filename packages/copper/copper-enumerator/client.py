@@ -22,10 +22,10 @@ class Copper:
             'X-PW-AccessToken': api_key,
             'X-PW-UserEmail': api_user_email,
         }
-        self.target_pipeline_id = target_pipeline_id
-        self.target_custom_field_definition_id = target_custom_field_definition_id
+        self.target_pipeline_id = int(target_pipeline_id)
+        self.target_custom_field_definition_id = int(target_custom_field_definition_id)
 
-    def fetch_opportunity(self, opportunity_id):
+    def fetch_opportunity(self, opportunity_id: int) -> dict:
         response = requests.request(
             'GET',
             "{base_url}/opportunities/{id}".format(base_url=self.base_url, id=opportunity_id),
@@ -33,3 +33,15 @@ class Copper:
         )
 
         return json.loads(response.text)
+
+    def fetch_pipeline_stages_ids(self, pipeline_id: int) -> list[int]:
+        response = requests.request(
+            'GET',
+            "{base_url}/pipeline_stages/pipeline/{id}".format(base_url=self.base_url, id=pipeline_id),
+            headers=self.default_headers
+        )
+
+        return list(map(lambda stage: stage['ids'], json.loads(response.text)))[1:]
+
+
+
