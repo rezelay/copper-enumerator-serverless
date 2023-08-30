@@ -41,7 +41,7 @@ class Copper:
             headers=self.default_headers
         )
 
-        return list(map(lambda stage: stage['ids'], json.loads(response.text)))[1:]
+        return list(map(lambda stage: stage['id'], json.loads(response.text)))[1:]
 
 
 
