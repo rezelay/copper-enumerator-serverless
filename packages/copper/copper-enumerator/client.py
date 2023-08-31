@@ -35,7 +35,12 @@ class Copper:
                                  .format(self.target_custom_field_definition_id))
 
         result = result[0]['value']
-        return int(result if result is not None else 0)
+        try:
+            result = int(result)
+        except:
+            result = 0
+        finally:
+            return result
 
     def sort_by_proposal_number(self, opportunities: list) -> list:
         return sorted(opportunities, key=self.get_target_custom_field_value, reverse=True)
@@ -58,14 +63,13 @@ class Copper:
 
         return list(map(lambda stage: stage['id'], json.loads(response.text)))[1:]
 
-    def search_last_opportunity(self, stage_ids: list[int]) -> list[dict]:
+    def search_last_opportunity(self) -> list[dict]:
         response = requests.request(
             'POST',
             "{base_url}/opportunities/search".format(base_url=self.base_url),
             headers=self.default_headers,
             data=json.dumps({
                 'pipeline_ids': [self.target_pipeline_id],
-                'pipeline_stage_ids': stage_ids,
                 'sort_by': 'date_created',
                 'sort_direction': 'desc',
             })
