@@ -61,7 +61,7 @@ class Copper:
             headers=self.default_headers
         )
 
-        return list(map(lambda stage: stage['id'], json.loads(response.text)))[1:]
+        return list(map(lambda stage: stage['id'], json.loads(response.text)))
 
     def search_last_opportunity(self) -> list[dict]:
         response = requests.request(
@@ -73,6 +73,20 @@ class Copper:
                 'sort_by': 'date_created',
                 'sort_direction': 'desc',
             })
+        )
+
+        return json.loads(response.text)
+
+    def update_opportunity(
+            self,
+            opportunity_id: int,
+            attributes: dict
+    ):
+        response = requests.request(
+            'PUT',
+            "{base_url}/opportunities/{id}".format(base_url=self.base_url, id=opportunity_id),
+            headers=self.default_headers,
+            data=json.dumps(attributes)
         )
 
         return json.loads(response.text)
