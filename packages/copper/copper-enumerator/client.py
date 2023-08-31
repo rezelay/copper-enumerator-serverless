@@ -70,7 +70,7 @@ class Copper:
             headers=self.default_headers,
             data=json.dumps({
                 'pipeline_ids': [self.target_pipeline_id],
-                'sort_by': 'date_created',
+                'sort_by': 'date_modified',
                 'sort_direction': 'desc',
             })
         )
